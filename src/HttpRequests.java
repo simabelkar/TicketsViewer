@@ -21,15 +21,23 @@ public class HttpRequests {
 	* @return API response
 	* @exception id<=0
 	*/
-	public String getTicket(int id)
+	public void getTicket(int id)
 	{
+		Ticket ticket = new Ticket();
 		if(id<=0)
 		{
 			System.out.println("ERROR: Please enter valid ID");
-			return null;
 		}
 		String url = LINK + "tickets/" + id + ".json";
-		return sendGet(url,"");
+		String response =  sendGet(url,"");
+		if(response != null)
+		{
+			//Parse json response
+			JsonParser jsonParser = new JsonParser();
+			ticket = jsonParser.parseSingleTicket(response);
+			//Display ticket
+			ticket.displayInformation();
+		}
 	}
 	
 	/**
@@ -47,8 +55,6 @@ public class HttpRequests {
 			//Create connection
 			URL object = new URL(targetUrl);
 			connection = (HttpURLConnection) object.openConnection();
-			connection.setDoOutput(true);
-			connection.setDoInput(true);
 			connection.setRequestProperty("Accept", "application/json");
 			//Authentication
 			Authenticator.setDefault (new Authenticator() {
@@ -67,11 +73,13 @@ public class HttpRequests {
 			 */
 			connection.setRequestMethod("GET");	
 			
-			//Send request
-		    DataOutputStream wr = new DataOutputStream (connection.getOutputStream());
-		    wr.writeBytes(urlParameters);
-		    wr.close();
-			
+			//Send request parameters if exist
+			if(!urlParameters.isEmpty())
+		    {
+				DataOutputStream wr = new DataOutputStream (connection.getOutputStream());
+				wr.writeBytes(urlParameters);
+				wr.close();
+		    }
 			//Get response
 			int responseCode = connection.getResponseCode();
 			//HTTP Request success (2xx)
@@ -80,7 +88,8 @@ public class HttpRequests {
 				//Get response message
 				BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 				String inputLine;
-				StringBuffer response = new StringBuffer();
+				//StringBuffer response = new StringBuffer();
+				StringBuilder response = new StringBuilder();
 				while ((inputLine = reader.readLine()) != null)
 					response.append(inputLine);
 				reader.close();

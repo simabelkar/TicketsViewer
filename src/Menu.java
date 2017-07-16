@@ -26,9 +26,7 @@ public class Menu {
 					case "2":
 					{
 						System.out.println("INFO: 2 pressed");
-						//request.sendGet();
-						response = request.getTicket(3);
-						System.out.println(response);
+						request.getTicket(3);
 						break;
 					}
 					case ">":
