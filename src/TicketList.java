@@ -23,6 +23,7 @@ public class TicketList {
 		if(perPage<1)
 			return "ERROR: invalid number of records on a per-request passed";
 		
+		System.out.println("\nProcessing your request, please wait...");
 		HttpRequests httpRequest = new HttpRequests();
 		String parameters = "?page=" + page + "&per_page=" + perPage;
 		String response = httpRequest.sendGet(ENDPOINT, parameters);
@@ -40,6 +41,7 @@ public class TicketList {
 			this.hasPrevious = ticketList.hasPrevious;
 			this.count = ticketList.count;
 			//Display the list
+			System.out.println("\n** Displaying page number " + page + " **\n");
 			displayList();
 			
 			return "SUCCESS";

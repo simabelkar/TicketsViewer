@@ -69,6 +69,7 @@ public class Ticket {
     	if(id<=0)
 			return "ERROR: Please enter valid ID";
     	
+    	System.out.println("\nProcessing your request, please wait...");
     	HttpRequests httpRequest = new HttpRequests();
     	String url = ENDPOINT + id + ".json";
     	String response = httpRequest.sendGet(url, null);
@@ -80,6 +81,7 @@ public class Ticket {
 			Ticket ticket = jsonParser.parseSingleTicket(response);
 			if(ticket == null)
 				return "An error occured while parsing json response";
+			
 			ticket.displayInformationWithHeadline();
 			return "SUCCESS";
     	}
