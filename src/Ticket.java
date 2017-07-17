@@ -3,6 +3,8 @@ import java.lang.Object;
 public class Ticket {
 	
 	//Variables
+	public static final String ENDPOINT = "/api/v2/tickets/";
+	
 	long id; //Automatically assigned when creating ticket (READ ONLY)
     String url; //The API url of this ticket (READ ONLY)
     String externalId; //An id you can use to link Zendesk Support tickets to local records
@@ -42,32 +44,47 @@ public class Ticket {
 	*/
     public void displayInformation()
     {
-    	System.out.println("ID\t Subject\t\t\t\t Priority\t Status\t\t Created at\t");
-		System.out.println("-----------------------------------------------------------------------------------------------------");
     	System.out.println(id + "\t" + this.subject + "\t" + this.priority + "\t\t" + this.status + "\t\t" + this.createdAt);
     }
     
-	/**
-	* This method insert record to Ticket object. Mandatory and Read Only parameters have to be inserted when the ticket record is created.
-	* @param mandatory: requesterId 
-      		 read only: id, url, description, hasIncident, via, satisfactionRating,
-      					followupIds, isPublic, createdAt, updatedAt
+    /**
+	* This method print the Ticket information to the user with columns headline.
 	*/
-    public void insertRecord(long id, String url, String subject, String description, String priority, String status, 
-    		long requesterId, Boolean hasIncident, Via via, Object satisfactionRating, String createdAt, String updatedAt )
+    private void displayInformationWithHeadline()
     {
-    	this.id = id;
-    	this.url = url;
-    	this.subject = subject;
-    	this.description = description;
-    	this.priority = priority;
-    	this.status = status;
-    	this.requesterId = requesterId;
-    	this.hasIncidents = hasIncident;
-    	this.via = via;
-    	this.satisfactionRating = satisfactionRating;
-    	this.createdAt = createdAt;
-    	this.updatedAt = updatedAt;
+    	System.out.println("ID\t Subject\t\t\t\t Priority\t Status\t\t Created at\t");
+		System.out.println("-----------------------------------------------------------------------------------------------------");
+		displayInformation();
+    }
+    
+	/**
+	* This method returns a number of ticket properties, but not the ticket comments.
+	* By creating endpoind using Zendesk API, call GET http request, call JSON parser and display the information.
+	* @param id
+	* @return error message, success
+	* @exception id<=0
+	*/
+    public String showTicket(int id)
+    {
+    	if(id<=0)
+			return "ERROR: Please enter valid ID";
+    	
+    	HttpRequests httpRequest = new HttpRequests();
+    	String url = ENDPOINT + id + ".json";
+    	String response = httpRequest.sendGet(url, null);
+    	//Request success - 200 or 300 range
+    	if(httpRequest.responseCode> 199 && httpRequest.responseCode < 400)
+    	{
+    		//Parse json response and display ticket
+			JsonParser jsonParser = new JsonParser();
+			Ticket ticket = jsonParser.parseSingleTicket(response);
+			if(ticket == null)
+				return "An error occured while parsing json response";
+			ticket.displayInformationWithHeadline();
+			return "SUCCESS";
+    	}
+    	
+    	return httpRequest.printErrorMessage(httpRequest.responseCode);
     }
     
 }	

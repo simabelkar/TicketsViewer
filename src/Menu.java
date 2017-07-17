@@ -9,8 +9,10 @@ public class Menu {
 	public static void main(String[] args) throws Exception {
 		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		HttpRequests request = new HttpRequests();
+		Ticket ticket = new Ticket();
+		TicketList ticketList = new TicketList();
 		String response;
+		
 		while(true)
 		{
 			try {
@@ -21,12 +23,17 @@ public class Menu {
 					case "1":
 					{
 						System.out.println("INFO: 1 pressed");
+						response = ticketList.listTickets(1, 25);
+						if(!response.equals("SUCCESS"))
+							System.out.println(response);
 						break;
 					}
 					case "2":
 					{
 						System.out.println("INFO: 2 pressed");
-						request.getTicket(3);
+						response = ticket.showTicket(3);
+						if(!response.equals("SUCCESS"))
+							System.out.println(response);
 						break;
 					}
 					case ">":

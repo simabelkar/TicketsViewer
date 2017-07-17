@@ -2,64 +2,60 @@
 public class TicketList {
 
 	//Variables
+	public static final String ENDPOINT = "/api/v2/tickets.json";
+			
 	Ticket[] ticketArray;
-	Boolean hasPrevious = false;
-	Boolean hasNext = false;
+	String hasPrevious = null;
+	String hasNext = null;
+	long count = 0;
 	
 	//Methods
 	/**
-	* This method print a single Ticket in the ticketArray.
-	* @param id
+	* This Method returns a maximum of 100 tickets per page
+	* Tickets are ordered chronologically by created date, from oldest to newest. The first ticket listed may not be the absolute oldest ticket in your account due to ticket archiving.
+	* @param perPage, page
 	* @exception id<=0
 	*/
-	public void displaySingleTicket(int id)
+	public String listTickets(int page, int perPage)
 	{
-		//Invalid ID inserted
-		if (id<=0)
-		{
-			System.out.println("ERROR: Please enter valid ID");
-			return;
-		}
+		if(page<1)
+			return "ERROR: invalid page number passed";
+		if(perPage<1)
+			return "ERROR: invalid number of records on a per-request passed";
 		
-		displayListHeadline();
-		
-		//Display single ticket (TODO: use search algorithm O(log(n) - sort list by ID and divide the list to 2)
-		for(int i=0; i<ticketArray.length; i++)
-		{
-			if(ticketArray[i].id == id)
-				ticketArray[i].displayInformation();
-		}
+		HttpRequests httpRequest = new HttpRequests();
+		String parameters = "?page=" + page + "&per_page=" + perPage;
+		String response = httpRequest.sendGet(ENDPOINT, parameters);
+		//Request success - 200 or 300 range
+    	if(httpRequest.responseCode> 199 && httpRequest.responseCode < 400)
+    	{
+    		//Parse json response and display ticket
+			JsonParser jsonParser = new JsonParser();
+			TicketList ticketList = jsonParser.parseTicketsList(response);
+			if(ticketList == null)
+				return "An error occured while parsing json response";
+			//Copy all variables to local variables
+			this.ticketArray = ticketList.ticketArray;
+			this.hasNext = ticketList.hasNext;
+			this.hasPrevious = ticketList.hasPrevious;
+			this.count = ticketList.count;
+			//Display the list
+			displayList();
+			
+			return "SUCCESS";
+    	}
+    	return httpRequest.printErrorMessage(httpRequest.responseCode) ;
 	}
 	
 	/**
-	* This method print all tickets in the ticketArray.
-	*/
-	/* 
-	public void displayList()
-	{
-		hasPrevious = false;
-		hasNext = false;
-		
-		displayListHeadline();
-		
-		//Display list content
-		for(int i=0; i<ticketArray.length; i++)
-		{
-			ticketArray[i].displayInformation();
-		}
-	}*/
-	
-	/**
 	* This method print given range of tickets in TicketArray.
-	* @param from, to
-	* 		 from - start with 1 -> ticketArray[0]
 	*/
-	public void displayList(int from, int to)
+	private void displayList()
 	{	
 		displayListHeadline();
 		
 		//Display list content
-		for(int i=from-1; i<to; i++)
+		for(int i=0; i<ticketArray.length; i++)
 		{
 			ticketArray[i].displayInformation();
 		}
@@ -70,7 +66,7 @@ public class TicketList {
 	*/
 	private void displayListHeadline()
 	{
-		System.out.println("ID\t Subject\t Priority\t Status\t Created at\t");
-		System.out.println("-------------------------------------------------------------------------------");
+		System.out.println("ID\t Subject\t\t\t\t Priority\t Status\t\t Created at\t");
+		System.out.println("-----------------------------------------------------------------------------------------------------");
 	}
 }
