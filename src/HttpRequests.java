@@ -7,19 +7,19 @@ import java.io.*;
 
 public class HttpRequests {
 
-	//Variables
+	//===== Variables =====
 	public static final String USERNAME = "simabelker@gmail.com";
 	public static final String PASSWORD = "sima1012";
 	public static final String SUBDOMAIN = "https://noonesupport.zendesk.com";
-	//public static final String LINK = "https://" + SUBDOMAIN + ".zendesk.com/api/v2/";
-	public int responseCode = 0;
+	public static int responseCode = 0;
 	
-	//Methods	
+	//===== Public Methods =====	
 	/**
-	* This method send HTTP GET request using Zendesk API
-	* @param targetUrl, urlParameters
-	* @return response(Json), error message
-	* @exception failed to open HttpURLConnection
+	* This method send HTTP GET request using Zendesk API. The username, password and subdomain are hardcoded.
+	* @param targetUrl - the request's URI.
+	* 	 	urlParameters - the request's parameters, if any.
+	* @return String - the response from the server (Json content) or relevant error message.
+	* @exception failed to open HttpURLConnection, common http errors.
 	*/
 	public String sendGet(String endpoint, String urlParameters)
 	{	
@@ -82,29 +82,30 @@ public class HttpRequests {
 	}
 	
 	/**
-	* This method print the HTTP error message.
-	* @param code
+	* This method print common HTTP error message (400, 401, 403, 404, 500, 503, 504).
+	* @param code - the response code of the HTTP request.
+	* @return string - the relevant error message of the http request.
 	*/
 	public String printErrorMessage(int code)
 	{
 		switch(code)
 		{
 			case 400:
-				return "HTTP ERROR 400: Bad Request - the HTTP request that was sent to the server has invalid syntax";
+				return "Bad Request - the HTTP request that was sent to the server has invalid syntax";
 			case 401:
-				return "HTTP ERROR 401: Unauthorized - the user trying to access the resource has not been authenticated";
+				return "Unauthorized - the user trying to access the resource has not been authenticated";
 			case 403:
-				return "HTTP ERROR 403: Forbidden - the user made a valid request but the server is refusing to serve the request";
+				return "Forbidden - the user made a valid request but the server is refusing to serve the request";
 			case 404:
-				return "HTTP ERROR 404: Not Found - unable to locate the requested file or resource";
+				return "Not Found - unable to locate the requested file or resource";
 			case 500:
-				return "HTTP ERROR 500: Internal Server Error - the server cannot process the request for an unknown reason";
+				return "Internal Server Error - the server cannot process the request for an unknown reason";
 			case 503:
-				return "HTTP ERROR 503: Service Unavailable - the server is overloaded or under maintenance";
+				return "Service Unavailable - the server is overloaded or under maintenance";
 			case 504:
-				return "HTTP ERROR 504: Gateway Timeout -  the server is a not receiving a response from the backend servers within the allowed time period";
+				return "Gateway Timeout -  the server is a not receiving a response from the backend servers within the allowed time period";
 			default:
-				return "HTTP ERROR: Unknown error occured";
+				return "Unknown error occured";
 		}
 	}
 }

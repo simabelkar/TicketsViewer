@@ -1,10 +1,10 @@
 import java.lang.Object;
+import java.util.ArrayList;
 
 public class Ticket {
 	
-	//Variables
+	//===== Variables =====
 	public static final String ENDPOINT = "/api/v2/tickets/";
-	
 	long id; //Automatically assigned when creating ticket (READ ONLY)
     String url; //The API url of this ticket (READ ONLY)
     String externalId; //An id you can use to link Zendesk Support tickets to local records
@@ -37,56 +37,99 @@ public class Ticket {
     boolean isPublic; //Is true if any comments are public, false otherwise (READ ONLY)
     String createdAt; //When this record was created (READ ONLY)
     String updatedAt; //When this record last got updated (READ ONLY)
-
-    //Methods
-    /**
-	* This method print the Ticket information to the user.
-	*/
-    public void displayInformation()
-    {
-    	System.out.println(id + "\t" + this.subject + "\t" + this.priority + "\t\t" + this.status + "\t\t" + this.createdAt);
-    }
     
-    /**
-	* This method print the Ticket information to the user with columns headline.
-	*/
-    private void displayInformationWithHeadline()
-    {
-    	System.out.println("ID\t Subject\t\t\t\t Priority\t Status\t\t Created at\t");
-		System.out.println("-----------------------------------------------------------------------------------------------------");
-		displayInformation();
-    }
-    
+    //===== Public Methods =====
 	/**
-	* This method returns a number of ticket properties, but not the ticket comments.
-	* By creating endpoind using Zendesk API, call GET http request, call JSON parser and display the information.
-	* @param id
-	* @return error message, success
-	* @exception id<=0
+	* This method display a number of ticket properties (Subject, CreatedAt, Description, RequesterId, submitterId,assigneeId)
+	* by creating request using Zendesk API, call send GET http request, call JSON parser and display the details of a single ticket.
+	* @param id - the id of the requested ticket.
+	* @return String - "SUCCESS" or relevant error message.
+	* @exception id<=0.
 	*/
     public String showTicket(int id)
     {
     	if(id<=0)
-			return "ERROR: Please enter valid ID";
+			return "ERROR: ID must be > 0";
     	
     	System.out.println("\nProcessing your request, please wait...");
     	HttpRequests httpRequest = new HttpRequests();
     	String url = ENDPOINT + id + ".json";
     	String response = httpRequest.sendGet(url, null);
     	//Request success - 200 or 300 range
-    	if(httpRequest.responseCode> 199 && httpRequest.responseCode < 400)
+    	if(HttpRequests.responseCode> 199 && HttpRequests.responseCode < 400)
     	{
     		//Parse json response and display ticket
 			JsonParser jsonParser = new JsonParser();
 			Ticket ticket = jsonParser.parseSingleTicket(response);
 			if(ticket == null)
-				return "An error occured while parsing json response";
+				return JsonParser.errorMessage;
 			
-			ticket.displayInformationWithHeadline();
+			ticket.displayInformation();
 			return "SUCCESS";
     	}
     	
-    	return httpRequest.printErrorMessage(httpRequest.responseCode);
+    	return httpRequest.printErrorMessage(HttpRequests.responseCode);
     }
     
-}	
+    //===== Private Methods =====
+    /**
+	* This method print the Ticket details to the user.
+	*/
+    private void displayInformation()
+    {
+    	//Display title
+    	System.out.format("\n %66s \n", "** Displaying ticket number " + this.id + " **");
+    	System.out.println(" ------------------------------------------------------------------------------------------------------------------------------------");
+    	//Subject align left, createdAt align right
+    	System.out.format("| Subject: %-82s  Created at: %-25s |\n", this.subject, this.createdAt);
+    	System.out.format("|%-132s|\n| Description: %-116s  |\n", " ","");
+    	//Handle Description content
+    	int length=this.description.length();
+    	//Description is short, and fit 1 row
+    	if(length <= 130)
+    		System.out.format("| %-130s |\n", this.description);
+    	//Description is too long, need text wrapping
+    	ArrayList<String> descWrapped = WrapTextFullWords (this.description, 130);
+    	for (int i=0; i< descWrapped.size(); i++)
+    	{
+    		System.out.format("| %-130s |\n", descWrapped.get(i));
+    	}
+
+    	System.out.format("|%-132s|\n| Requester id: %-28s  Submitter id: %-33s  Assignee id: %-24s |\n", "", this.requesterId, this.submitterId, this.assigneeId);
+    	System.out.println(" ------------------------------------------------------------------------------------------------------------------------------------");
+    }
+    
+    /**
+	* This method wrap the text showing full words, used to wrap the description content.
+	*/
+    private ArrayList<String> WrapTextFullWords (String str, int maxLength)
+    {
+    	ArrayList<String> result = new ArrayList<String>();
+    	
+    	//Remove new line within the description
+    	str = str.replace("\n", "");
+    	String[] wordsArray = str.split(" ");
+    	String line = "";
+    	//Wrap text
+    	for(int i=0; i<wordsArray.length; i++)
+    	{
+    		//Words can be added to the line
+    		if(line.length() + wordsArray[i].length() <= maxLength-1)
+    			line = line.concat(wordsArray[i] + " ");
+    		//Line reached max length
+    		else
+    		{
+    			i--; //Skip the word that not inserted to the line
+    			result.add(line);
+    			line = "";
+    		}
+    	}
+    	//Add the last line
+    	result.add(line); 
+    	
+    	return result;
+    }
+}
+    
+
+

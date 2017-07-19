@@ -2,19 +2,17 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import com.sun.xml.internal.ws.util.StringUtils;
-
 public class Menu {
 
-	//Variables
+	//===== Variables =====
 	public static final int PER_PAGE = 25;
-	
 	public static Ticket ticket = new Ticket();
 	public static TicketList ticketList = new TicketList();
 	public static String response;
-	public static String hasNext = null, hasPrev = null;
+	public static boolean hasNext = false, hasPrev = false;
 	public static boolean displayMain = true;
 	
+	//===== Main =====
 	public static void main(String[] args) throws Exception {
 		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -35,9 +33,6 @@ public class Menu {
 						int id = 0;
 						do
 						{
-							//Initialize the page navigators
-							hasNext = null;
-							hasPrev = null;
 							//Get ticket id from the user
 							System.out.print("Please enter ticket ID: ");
 							try{
@@ -68,7 +63,7 @@ public class Menu {
 					//Navigate to next page, available only in list view
 					case ">":
 					{
-						if(hasNext!= null)
+						if(hasNext != false)
 						{
 							page++;
 							//Gate ticket list of 25 tickets
@@ -81,7 +76,7 @@ public class Menu {
 					//Navigate to previous page, available only in list view
 					case "<":
 					{
-						if(hasPrev!= null && page>1)
+						if(hasPrev != false && page>1)
 						{
 							page--;
 							//Gate ticket list of 25 tickets
@@ -119,7 +114,7 @@ public class Menu {
 		
 	}
 	
-	//Methods
+	//===== Private Methods =====
 	/**
 	* This method display the main menu to the user.
 	*/
@@ -132,7 +127,7 @@ public class Menu {
 	}
 	
 	/**
-	* This method display the navigation menu to the user.
+	* This method display the navigation menu to the user the the ticket list displays.
 	*/
 	private static void displayNavigationMenu()
 	{
@@ -142,6 +137,9 @@ public class Menu {
 		System.out.println("Type 'back' go back to main menu");
 	}
 	
+	/**
+	* This method display the main menu to the user when the program loaded.
+	*/
 	private static void displayLogo()
 	{
 		System.out.println(" .----------------."); 
@@ -158,8 +156,8 @@ public class Menu {
 	}
 	
 	/**
-	* This method display the requested page and update the navigation flags.
-	* @param getPage, per_page=25
+	* This method display the requested page and update the navigation flags of this page.
+	* @param page - the requested page
 	*/
 	private static void getPage(int page)
 	{

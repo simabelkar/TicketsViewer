@@ -1,74 +1,98 @@
 
 public class TicketList {
 
-	//Variables
+	//===== Variables =====
 	public static final String ENDPOINT = "/api/v2/tickets.json";
-			
-	Ticket[] ticketArray;
-	String hasPrevious = null;
-	String hasNext = null;
-	long count = 0;
+	public Ticket[] ticketArray;
+	public boolean hasPrevious = false;
+	public boolean hasNext = false;
 	
-	//Methods
+	//===== Public Methods =====
 	/**
-	* This Method returns a maximum of 100 tickets per page
+	* This Method display list of tickets with the following information: Id, Type, Subject, Priority, Status, Created.
+	* by creating request using Zendesk API, call send GET http request, call JSON parser and display the details in a list, using pagination. Display only maximum of 25 tickets per page.
 	* Tickets are ordered chronologically by created date, from oldest to newest. The first ticket listed may not be the absolute oldest ticket in your account due to ticket archiving.
-	* @param perPage, page
+	* @param perPage - define how many tickets in a page (the system limit is 25 at most).
+	* 		 page - the number of the requested page (used for pagination).
+	* @return String - "SUCCESS" or relevant error message.
 	* @exception id<=0
 	*/
 	public String listTickets(int page, int perPage)
 	{
 		if(page<1)
-			return "ERROR: invalid page number passed";
+			return "ERROR: page number must be > 0";
 		if(perPage<1)
-			return "ERROR: invalid number of records on a per-request passed";
+			return "ERROR: number of records on a per-request must be > 0";
 		
 		System.out.println("\nProcessing your request, please wait...");
 		HttpRequests httpRequest = new HttpRequests();
 		String parameters = "?page=" + page + "&per_page=" + perPage;
 		String response = httpRequest.sendGet(ENDPOINT, parameters);
 		//Request success - 200 or 300 range
-    	if(httpRequest.responseCode> 199 && httpRequest.responseCode < 400)
+    	if(HttpRequests.responseCode> 199 && HttpRequests.responseCode < 400)
     	{
     		//Parse json response and display ticket
 			JsonParser jsonParser = new JsonParser();
 			TicketList ticketList = jsonParser.parseTicketsList(response);
 			if(ticketList == null)
-				return "An error occured while parsing json response";
+				return JsonParser.errorMessage;
 			//Copy all variables to local variables
 			this.ticketArray = ticketList.ticketArray;
 			this.hasNext = ticketList.hasNext;
 			this.hasPrevious = ticketList.hasPrevious;
-			this.count = ticketList.count;
 			//Display the list
-			System.out.println("\n** Displaying page number " + page + " **\n");
-			displayList();
+			displayList(page);
 			
 			return "SUCCESS";
     	}
-    	return httpRequest.printErrorMessage(httpRequest.responseCode) ;
+    	return httpRequest.printErrorMessage(HttpRequests.responseCode) ;
 	}
 	
+	//===== Private Methods =====
 	/**
-	* This method print given range of tickets in TicketArray.
+	* This method print the tickets list in a given page.
 	*/
-	private void displayList()
+	private void displayList(int page)
 	{	
-		displayListHeadline();
-		
+		//Display title
+		System.out.format("\n %66s \n", "** Displaying page number " + page + " **");
+		//Display the list
+		displayHeadline();
 		//Display list content
 		for(int i=0; i<ticketArray.length; i++)
-		{
-			ticketArray[i].displayInformation();
-		}
+			displayInformation(ticketArray[i]);
+		displayFooter();
 	}
 	
 	/**
-	* This method print the list headline.
+	* This method print the ticket information to the user (a single row in the table).
 	*/
-	private void displayListHeadline()
-	{
-		System.out.println("ID\t Subject\t\t\t\t Priority\t Status\t\t Created at\t");
-		System.out.println("-----------------------------------------------------------------------------------------------------");
-	}
+    private void displayInformation(Ticket ticket)
+    {
+    	String str = ticket.subject;
+    	//Limit subject length to 50 chars
+    	if (str.length() >50)
+    		str = str.substring(0,46) + "...";
+    	//Align left
+    	System.out.format("| %-10s | %-10s | %-50s | %-10s | %-10s | %-25s |\n", ticket.id+"", ticket.type, str, ticket.priority, ticket.status, ticket.createdAt);
+    }
+    
+    /**
+	* This method print the table headline.
+	*/
+    private void displayHeadline()
+    {
+		System.out.println(" ------------------------------------------------------------------------------------------------------------------------------------");
+		//Align left
+		System.out.format("| %-10s | %-10s | %-50s | %-10s | %-10s | %-25s |\n", "ID", "Type", "Subject", "Priority", "Status", "Created");
+		System.out.println(" ------------------------------------------------------------------------------------------------------------------------------------");
+    }
+    
+    /**
+	* This method print the table footer.
+	*/
+    private void displayFooter()
+    {
+		System.out.println(" ------------------------------------------------------------------------------------------------------------------------------------");
+    }
 }

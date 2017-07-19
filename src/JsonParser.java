@@ -1,19 +1,19 @@
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 
 public class JsonParser {
 	
-	//Variables
+	//===== Variables =====
 	public static final int MAX = 25;
+	public static String errorMessage;
 	
-	//Methods
+	//===== Public Methods =====
 	/**
-	* This method parse the JSON content of single ticket.
-	* @param jsonContent
-	* @return Ticket, null
+	* This method parse the JSON content of a single ticket.
+	* @param jsonContent - content in JSON.
+	* @return Ticket - Ticket object (contain the tickets properties).
+	* 		 null - in case of parsing failure
 	*/
 	public Ticket parseSingleTicket(String jsonContent)
 	{
@@ -26,11 +26,15 @@ public class JsonParser {
 			JSONObject ticketStructure = (JSONObject) jsonObject.get("ticket");
 			//No ticket exist in the response
 			if(ticketStructure.isEmpty())
+			{
+				errorMessage = "Error: no record found";
 				return null;
+			}
 			return parseTicketStructure(ticketStructure);
 		} 
 		catch (Exception e) 
 		{
+			errorMessage = "Internal Error: internal error occurs while processing your request";
 			return null;	
 		}
 	}
@@ -38,8 +42,9 @@ public class JsonParser {
 	/**
 	* This method parse the JSON content of ticket list.
 	* The method limit the list size to 25 per page.
-	* @param jsonContent
-	* @return TicketList, null
+	* @param jsonContent - content in JSON.
+	* @return TicketList - TicketList object (contain the ticket array and navigation flag)
+	* 		null - in case of parsing failure.
 	*/
 	public TicketList parseTicketsList(String jsonContent)
 	{
@@ -53,7 +58,10 @@ public class JsonParser {
 			JSONArray ticketArray = (JSONArray)  jsonObject.get("tickets");
 			//No tickets exist in the response
 			if(ticketArray.isEmpty())
+			{
+				errorMessage = "Error: no records found";
 				return null;
+			}
 			//Page contain list size < 25
 			if(ticketArray.size()<MAX)
 				ticketList.ticketArray = new Ticket[ticketArray.size()];
@@ -62,27 +70,33 @@ public class JsonParser {
 			//Take tickets elements from array, limit to 25 items per page
 			for(int i=0; i<ticketArray.size() && i<MAX; i++)
 			{
-				//Single ticket within the array
+				//Parse single ticket within the array
 				JSONObject ticketStructure = (JSONObject)ticketArray.get(i);
 				Ticket t = parseTicketStructure(ticketStructure);
 				if (t == null)
+				{
+					errorMessage = "Error: no records found";
 					return null;
+				}
 				ticketList.ticketArray[i]  = t;
 			}
-			parseOtherTicketsListResults(jsonObject,ticketList);
+			parseNavigationFlags(jsonObject,ticketList);
 			
 			return ticketList;
 		}
 		catch (Exception e)
 		{
+			errorMessage = "Internal Error: internal error occurs while processing your request";
 			return null;
 		}
 	}
 	
+	//===== Private Methods =====
 	/**
-	* This method parse the JSON object of ticket structure.
-	* @param jsonContent
-	* @return Ticket, null
+	* This method parse the JSON object of a single ticket structure.
+	* @param jsonContent - content in JSON.
+	* @return Ticket - Ticket object (contain the tickets properties).
+	* 		 null - in case of parsing failure
 	*/
 	private Ticket parseTicketStructure(JSONObject ticketStructure)
 	{
@@ -108,7 +122,6 @@ public class JsonParser {
 				ticket.via.source.rel = (JSONObject) sourceStructure.get("rel");
 			}
 		}
-		//TODO via structure
 		ticket.createdAt = (String)ticketStructure.get("created_at");
 		ticket.updatedAt = (String)ticketStructure.get("updated_at");
 		ticket.type = (String)ticketStructure.get("type");
@@ -172,7 +185,8 @@ public class JsonParser {
 			//Take the elements of the json array
 			for(int i=0; i<jsonArray.size(); i++)
 			{
-				ticket.sharingAgreementIds[i] = (long)jsonArray.get(i);
+				if(jsonArray.get(i) != null)
+					ticket.sharingAgreementIds[i] = (long)jsonArray.get(i);
 			}
 		}
 		//ticket.customField = (String[]) ticketStructure.get("fields");
@@ -183,15 +197,24 @@ public class JsonParser {
 		return ticket;
 	}
 	
-	private void parseOtherTicketsListResults(JSONObject jsonObject, TicketList ticketList)
+	/**
+	* This method parse the navigation flag in tickets list structure.
+	* @param jsonObject - jsonContent - content in JSON.
+	* 		ticketList - a given ticket list.
+	*/
+	private void parseNavigationFlags(JSONObject jsonObject, TicketList ticketList)
 	{
 		String nextPageUrl = (String) jsonObject.get("next_page");
 		String previousPageUrl = (String) jsonObject.get("previous_page");
-		long totalTickets = (long) jsonObject.get("count");
 		
 		//Copy to TicketList object
-		ticketList.hasNext = nextPageUrl;
-		ticketList.hasPrevious = previousPageUrl;
-		ticketList.count = totalTickets;
+		if(nextPageUrl == null)
+			ticketList.hasNext = false;
+		else
+			ticketList.hasNext = true;
+		if(previousPageUrl == null)
+			ticketList.hasPrevious = false;
+		else
+			ticketList.hasPrevious = true;
 	}
 }
