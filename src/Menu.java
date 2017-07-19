@@ -32,7 +32,7 @@ public class Menu {
 					{
 						int id = 0;
 						do
-						{
+						{	
 							//Get ticket id from the user
 							System.out.print("Please enter ticket ID: ");
 							try{
@@ -51,6 +51,7 @@ public class Menu {
 								System.out.println("The ticket ID is invalid, please try again!");
 							}
 						}while(id<=0);
+						displaySingleTicketMenu();
 						break;
 					}
 					//Display tickets list using paging
@@ -61,7 +62,7 @@ public class Menu {
 						break;
 					}
 					//Navigate to next page, available only in list view
-					case ">":
+					case "n":
 					{
 						if(hasNext != false)
 						{
@@ -74,7 +75,7 @@ public class Menu {
 						break;
 					}
 					//Navigate to previous page, available only in list view
-					case "<":
+					case "p":
 					{
 						if(hasPrev != false && page>1)
 						{
@@ -90,6 +91,7 @@ public class Menu {
 					case "back":
 					{
 						displayMain = true;
+						page = 1;
 						break;
 					}
 					//Exit	
@@ -132,9 +134,19 @@ public class Menu {
 	private static void displayNavigationMenu()
 	{
 		displayMain = false;
-		System.out.println("\nType '>' to move to the next page");
-		System.out.println("Type '<' to move to the previous page");
+		System.out.println("\nType 'n' to move to the next page");
+		System.out.println("Type 'p' to move to the previous page");
+		System.out.println("Type '1' to view a single ticket");
 		System.out.println("Type 'back' go back to main menu");
+	}
+	
+	/**
+	* This method display the navigation menu to the user the the ticket list displays.
+	*/
+	private static void displaySingleTicketMenu()
+	{
+		displayMain = false;
+		System.out.println("\nType 'back' go back to main menu");
 	}
 	
 	/**
