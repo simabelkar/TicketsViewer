@@ -1,6 +1,12 @@
+package TicketsViewerTests;
+
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import TicketViewerCode.JsonParser;
+import TicketViewerCode.Ticket;
+import TicketViewerCode.TicketList;
 
 /*Unit tests for JsonParser class methods */
 public class JsonParserTest {

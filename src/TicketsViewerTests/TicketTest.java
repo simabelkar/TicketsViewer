@@ -1,6 +1,10 @@
+package TicketsViewerTests;
+
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import TicketViewerCode.Ticket;
 
 /*Unit tests for Ticket class methods */
 public class TicketTest {

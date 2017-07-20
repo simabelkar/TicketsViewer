@@ -1,5 +1,9 @@
+package TicketsViewerTests;
+
 import static org.junit.Assert.*;
 import org.junit.Test;
+
+import TicketViewerCode.HttpRequests;
 
 /*Unit tests for HttpRequests class methods */
 public class HttpRequestsTest {
