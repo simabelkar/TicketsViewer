@@ -5,6 +5,7 @@ import java.net.URL;
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
 
+/*This class responsible for passing HTTP request and return the request response */
 public class HttpRequests {
 
 	//===== Variables =====

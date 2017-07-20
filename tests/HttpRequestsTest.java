@@ -1,6 +1,7 @@
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+/*Unit tests for HttpRequests class methods */
 public class HttpRequestsTest {
 
 	//Tested Method: sendGet()

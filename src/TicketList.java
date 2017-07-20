@@ -1,4 +1,5 @@
 
+/*This class represents tickets list and paging indicator enable paging through the list and provide an API compatible with TicketList */
 public class TicketList {
 
 	//===== Variables =====

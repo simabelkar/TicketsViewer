@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/*This class is the user interface using CLI */
 public class Menu {
 
 	//===== Variables =====
@@ -97,7 +98,7 @@ public class Menu {
 					//Exit	
 					case "quit":
 					{
-						System.out.println("Bye bye :)");
+						System.out.println("Thank you for using Ticket Viewer. Bye bye :)");
 						return;
 					}
 					//Default error in case non of the options typed

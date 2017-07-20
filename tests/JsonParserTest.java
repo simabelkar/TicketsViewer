@@ -2,7 +2,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class jsonParserTest {
+/*Unit tests for JsonParser class methods */
+public class JsonParserTest {
 	
 	//Tested method: parseSingleTicket()
 	@Test

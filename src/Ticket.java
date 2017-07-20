@@ -1,6 +1,7 @@
 import java.lang.Object;
 import java.util.ArrayList;
 
+/*This class represents a single ticket in the system and provide an API compatible with Ticket */
 public class Ticket {
 	
 	//===== Variables =====
@@ -26,7 +27,7 @@ public class Ticket {
     boolean hasIncidents; //Is true of this ticket has been marked as a problem, false otherwise (READ ONLY)
     String dueAt; //If this is a ticket of type "task" it has a due date. Due date format uses ISO 8601 format.
     String[] tags; //The array of tags applied to this ticket
-    Via via = new Via();; //This object explains how the ticket was created (READ ONLY)
+    Via via = new Via(); //This object explains how the ticket was created (READ ONLY)
     String[] customField; //The custom fields of the ticket
     Object satisfactionRating; //The satisfaction rating of the ticket, if it exists, or the state of satisfaction, 'offered' or 'unoffered' (READ ONLY)
     long[] sharingAgreementIds; //The ids of the sharing agreements used for this ticket
@@ -38,6 +39,19 @@ public class Ticket {
     String createdAt; //When this record was created (READ ONLY)
     String updatedAt; //When this record last got updated (READ ONLY)
     
+    //Nested class
+    public class Via
+    {
+    	String channel;
+    	Source  src = new Source();
+    	//Nested class
+    	public class Source
+    	{
+    		Object from;
+    		Object to;
+    		Object rel;
+    	}
+    }
     //===== Public Methods =====
 	/**
 	* This method display a number of ticket properties (Subject, CreatedAt, Description, RequesterId, submitterId,assigneeId)

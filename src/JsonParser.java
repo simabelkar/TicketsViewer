@@ -2,6 +2,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+/*This class responsible for parsing a given Json content and return the object parsed with data */
 public class JsonParser {
 	
 	//===== Variables =====
@@ -117,9 +118,9 @@ public class JsonParser {
 			JSONObject sourceStructure = (JSONObject) viaStructure.get("source");
 			if(sourceStructure != null)
 			{
-				ticket.via.source.from = (JSONObject) sourceStructure.get("from");
-				ticket.via.source.to = (JSONObject) sourceStructure.get("to");
-				ticket.via.source.rel = (JSONObject) sourceStructure.get("rel");
+				ticket.via.src.from = (JSONObject) sourceStructure.get("from");
+				ticket.via.src.to = (JSONObject) sourceStructure.get("to");
+				ticket.via.src.rel = (JSONObject) sourceStructure.get("rel");
 			}
 		}
 		ticket.createdAt = (String)ticketStructure.get("created_at");
@@ -189,7 +190,6 @@ public class JsonParser {
 					ticket.sharingAgreementIds[i] = (long)jsonArray.get(i);
 			}
 		}
-		//ticket.customField = (String[]) ticketStructure.get("fields");
 		if(ticketStructure.get("brand_id")!= null)
 			ticket.brandId = (long) ticketStructure.get("brand_id");
 		ticket.allowChannelback = (boolean) ticketStructure.get("allow_channelback");
