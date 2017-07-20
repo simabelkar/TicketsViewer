@@ -1,9 +1,11 @@
-
+-------------------
+Author: Sima Dahan
+-------------------
 This readme explain how to use the ticket viewer program for "Zendesk Coding Challenge 2017", 
 which is availble on Github at:  https://github.com/simabelkar/TicketsViewer
 
 
-Zendesk Ticket Viewer  - by Sima Dahan.
+Zendesk Ticket Viewer
 ---------------------
 Ticket Viewer is a tool, which connected to Zendesk API and allow you to:
 - Request all the tickets for your account and display then in a list (by pressing '2' in main menu). The list
@@ -27,67 +29,46 @@ Getting Started
 These instructions will get you a copy of this project up and runinng on your local machine.
 
 
-Pre-requisites
---------------
-<What thing you need to install the SW and how to install them>
-Java 7 or higher.
-Junit 4.x
+==== Pre-requisites ====
 
-Installing
-----------
-You have serval options for running the Program:
+Need to install Java 7 or higher.
 
----- RUN IN AN IDE ----
 
-If you want to run the program in an IDE, such as Eclipse, you should be able to copy the entire
-contents of the 'src' and 'lib' folder to the project in the IDE, and then run the program.
-
+==== Installing ====
 
 ---- COMPILE AND RUN ON THE COMMAND LINE ----
+If you want to compile the program on the command line, and if you have downloaded the project from Github to you computer, you can easily compile and run the program.
 
-
-Windows: 
-
-If you want to compile the program on the command line, and if you have downloaded the project from Github 
-to you computer, you can easily compile and run the program.
-Just change into the 'src' directory and use the command
-
-					javac -d ..\bin -cp ..\lib\json-simple-1.1.1.jar *.java
-
-The '-d' flags tells javac where to put the output file.
-The '-cp' flag tells javac where the used-defined classes and packages are located .
+* For Windows: 
+  1. Just change into the project root directory and use the command
 					
-to compile all the files for this program. As long as your computer supports Java 7 or higher, there should 
-be no errors (You might see some warnings, especially if you use a newer version of java, but warning do not 
-stop the program from being compiled or executed.) 
-Change into the 'bin' directory and use the command	
-You can then run the program using the java command
+					javac -d .\bin -cp .\lib\* .\src\TicketViewerTests\*.java .\src\TicketViewerCode\*.java
+					
+	 to compile all the files for this program. As long as your computer supports Java 7 or higher, there should be no errors.
+  
+  2. from project root directory run the program using the java command
 				
-					java Menu
+					java -cp .\lib\json-simple-1.1.1.jar;.\bin TicketViewerCode.Menu
 
-Mac:
+* For Mac:
 	
 					
-					
-					
 
-How it is used:
---------------
-<discriptive example of usage after it is up and running>
 
 Running the test
 ----------------
-<Explain how to run the automated tests for this system>
----- RUN ON THE COMMAND LINE ----
-For Windows:
-					javac -cp <path>/junit.jar orj.junit.runner.JUnitCore <TestClass1> <TestClass2> <TestClass3> [WITHOUR .CLASS EXTANSION]
-					javac -cp ./<path>/lib/* <class>.java
+* For Windows: 
+  from project root directory run the tests using the java command
 
+					java -cp .\lib\*;.\bin TicketViewerTests.TestRunne
+
+For Mac:
+					
+					
 Build With
 ----------
-<the framework used>
-<dependency management>
+This tool tested with Java 7 on Window OS.
 
 
-Contact info: email, website
+Contact info: simabelker@gmail.com, www.simadahan.com 
 

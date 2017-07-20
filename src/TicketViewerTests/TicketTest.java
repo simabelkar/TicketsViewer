@@ -1,4 +1,4 @@
-package TicketsViewerTests;
+package TicketViewerTests;
 
 import static org.junit.Assert.*;
 
@@ -47,6 +47,6 @@ public class TicketTest {
 		//Execution
 		String result = ticket.showTicket(123456);
 		//Verification
-		assertEquals("HTTP ERROR 404: Not Found - unable to locate the requested file or resource",result);
+		assertEquals("Not Found - unable to locate the requested file or resource",result);
 	}
 }

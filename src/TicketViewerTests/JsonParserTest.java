@@ -1,4 +1,4 @@
-package TicketsViewerTests;
+package TicketViewerTests;
 
 import static org.junit.Assert.*;
 
