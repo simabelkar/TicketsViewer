@@ -8,10 +8,10 @@ which is availble on Github at:  https://github.com/simabelkar/TicketsViewer
 # Zendesk Ticket Viewer
   ---------------------
 Ticket Viewer is a tool, which connected to Zendesk API and allow you to:
-- Request all the tickets for your account and display then in a list (by pressing '2' in main menu). The list
+* Request all the tickets for your account and display then in a list (by pressing '2' in main menu). The list
   is ordered by created date, from oldest to newest. 
-- Page through tickets when more than 25 are returned (by pressign 'n' or 'p' in ticket list view).
-- Display individual ticket details by inserting the ticket id (by pressing '1' in main menu or ticket list 
+* Page through tickets when more than 25 are returned (by pressign 'n' or 'p' in ticket list view).
+* Display individual ticket details by inserting the ticket id (by pressing '1' in main menu or ticket list 
   view, then entering the ticket id).
 
 
